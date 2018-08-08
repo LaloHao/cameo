@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import registerServiceWorker from './registerServiceWorker';
+import './global';
 import App from './App';
-import './global/Observable.js';
 
 ReactDOM.render(<App />, document.getElementById('root'));
 registerServiceWorker();
