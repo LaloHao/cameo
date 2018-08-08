@@ -1,11 +1,18 @@
 {
-  "presets": ["babel-preset-expo"],
-  "env": {
-    "development": {
-      "plugins": [
-        "@babel/plugin-proposal-decorators",
-        "transform-react-jsx-source"
-      ]
-    }
-  }
+  "presets": ["react-native"],
+  "plugins": [
+    "expo-web",
+    "react-native-web",
+    "transform-decorators-legacy",
+    "transform-react-jsx-source",
+    ["transform-runtime", { "helpers": false, "polyfill": false, "regenerator": true }],
+    ["module-resolver", {
+      "root": "./src",
+      "alias": {
+        "components": "./src/components",
+        "store": "./src/store",
+        "types": "./src/types"
+      }
+    }]
+  ]
 }
