@@ -1,47 +1,81 @@
 import React from 'react';
 import {
-  View,
   Text,
 } from 'react-native';
 
-import ReactTestUtils from 'react-dom/test-utils';
-// import ReactNativeComponentTree from 'ReactNativeComponentTree';
-
-import recompact, {
+import {
   setDisplayName,
   withStateHandlers,
   withProps,
+  compose,
 } from 'recompact';
 
 import {
-  // withMouseMove,
   withResponder,
+  withStoreComponents,
 } from './enhance';
 
-import { Canvas } from 'components';
+import {
+  Column,
+  Container,
+} from 'core';
+
+import {
+  Canvas,
+} from 'components';
+
+const input = { display: 'flex', flex: 1 };
+const string = component => JSON.stringify(component, null, 2);
+const App = ({ handlers, position, click, onChange, store: { components }, component }) => (
+  <Container {...handlers} flex="1" bgcolor="gray">
+    <Canvas component={component.data()} width="500px" height="300px" top="100px" left="100px" />
+    <Container position="absolute" top="30px" right="30px">
+    </Container>
+    <Container position="absolute" bottom="30px" left="30px" width="300px" height="300px">
+      <textarea style={input} value={string(component.data())} readOnly />
+    </Container>
+    <Column position="absolute" bottom="30px" right="30px">
+      <Text>mouse: {position.x}, {position.y}</Text>
+      <Text>click: {click.x}, {click.y}</Text>
+    </Column>
+  </Container>
+);
+
+// <Components components={components} onChange={onChange} value={component} />
+
+const Component = (component, i) => (
+  <option value={i} key={i}>
+    {component.data().displayName}
+  </option>
+);
+
+const Components = ({ components, onChange, value }) => (
+  <select onChange={onChange} value={value}>
+    {components.map(Component)}
+  </select>
+);
 
 const debug = withProps(console.log);
-
-const enhance = recompact.compose(
+const enhance = compose(
   setDisplayName('App'),
+  withStoreComponents,
   withStateHandlers(
-    () => ({ component: {} }),
+    () => ({ component: 1 }),
     {
-      onChange: () => component => ({ component }),
+      onChange: (_, { store }) => ({
+        nativeEvent: {
+          target: {
+            value: component,
+          },
+        },
+      }) => ({ component }),
     },
   ),
+  withProps(({ store, component }) => ({
+    component: store.components.find(({ id }) => component),
+  })),
+  // debug,
   withResponder,
 );
 
-const App = ({ handlers, position, click, component, onChange }) => (
-  <View {...handlers} style={{ flex: 1 }}>
-    <Canvas component={component} onChange={onChange} />
-    <View style={{ position: 'absolute', right: 30, bottom: 30, flex: 0 }}>
-      <Text>mouse: {position.x}, {position.y}</Text>
-      <Text>click: {click.x}, {click.y}</Text>
-    </View>
-  </View>
-);
-
-// {console.log(click)}
 export default enhance(App);

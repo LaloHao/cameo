@@ -1,7 +1,4 @@
-export * from './Canvas.js'
-export * from './Element.js'
-export * from './Grid.js'
-export * from './Inspector.js'
-export * from './MouseCoordinates.js'
-export * from './Screen.js'
-export * from './Toolbar.js'
+export { default as Canvas } from './Canvas';
+export { default as Element } from './Element';
+export { default as Errorboundary } from './ErrorBoundary';
+export { default as Renderer } from './Renderer';

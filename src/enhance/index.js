@@ -1,3 +1,4 @@
-export * from './withMouseMove.js'
-export * from './withPanResponder.js'
-export * from './withResponder.js'
+export { default as withFirestore } from './withFirestore';
+export { default as withMouseMove } from './withMouseMove';
+export { default as withResponder } from './withResponder';
+export { default as withStoreComponents } from './withStoreComponents';

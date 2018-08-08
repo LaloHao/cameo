@@ -35,6 +35,8 @@
     "eslint-config-hao": "lalohao/eslint#develop",
     "expo": "^27.0.1",
     "expo-web": "^0.0.12",
+    "firebase": "^5.3.1",
+    "prop-types": "^15.6.2",
     "react": "16.3.1",
     "react-broadcast": "^0.7.1",
     "react-dom": "16.0.0",
@@ -44,7 +46,8 @@
     "recompose": "^0.27.1",
     "rxjs": "6",
     "rxjs-compat": "6",
-    "styled-components": "^3.3.3",
+    "styled-components": "^3.4.1",
+    "uid": "^0.0.2",
     "webpack": "^3.11.0",
     "webpack-dev-server": "2.9.4"
   }

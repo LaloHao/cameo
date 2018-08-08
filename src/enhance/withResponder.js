@@ -1,12 +1,12 @@
 import React from 'react';
-import { Observable } from 'rxjs/Rx'
+import { Observable } from 'rxjs/Rx';
 
 import {
   mapPropsStream,
   createEventHandler,
 } from 'recompact';
 
-export const withResponder = mapPropsStream(props$ => {
+const withResponder = mapPropsStream(props$ => {
   const { handler: onStartShouldSetResponder, stream: onStartShouldSetResponder$ } = createEventHandler();
   const { handler: onMoveShouldSetResponder, stream: onMoveShouldSetResponder$ } = createEventHandler();
   const { handler: onResponderGrant, stream: onResponderGrant$ } = createEventHandler();
@@ -64,3 +64,5 @@ export const withResponder = mapPropsStream(props$ => {
     .combineLatest(click$, (props, click) => ({ ...props, click }))
     .combineLatest(position$, (props, position) => ({ ...props, position }))
 });
+
+export default withResponder;

@@ -3,7 +3,7 @@ import {
   createEventHandler,
 } from 'recompact';
 
-export const withMouseMove = mapPropsStream(props$ => {
+const withMouseMove = mapPropsStream(props$ => {
   const { handler: onMove, stream: onMove$ } = createEventHandler();
 
   const position$ = onMove$
@@ -15,3 +15,5 @@ export const withMouseMove = mapPropsStream(props$ => {
     .map(props => ({ ...props, onMove }))
     .combineLatest(position$, (props, position) => ({ ...props, move: position }));
 });
+
+export default withMouseMove;

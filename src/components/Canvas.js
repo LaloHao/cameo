@@ -1,32 +1,27 @@
 import React from 'react';
-import { compose } from 'recompose';
+import {
+  compose,
+  setDisplayName,
+  onlyUpdateForPropTypes,
+  withProps,
+} from 'recompact';
 
 import {
-  View,
   Platform,
   Animated,
   PanResponder,
   Text,
 } from 'react-native';
 
-const Element = (type, props, children) => {
-  return React.creatElement(type, props, children);
-};
+import {
+  Container
+} from 'core';
 
-const Render = (component) => {
-  if (typeof component === 'string') { return component; }
+import {
+  Renderer,
+} from 'components';
 
-  let children = component.children;
-  if (component.children) {
-    if (Array.isArray(component.children)) {
-      children = component.children.map(Render);
-    }
-  }
-
-  return Element(component.type, component.props, children);
-};
-
-const Renderer = ({ component }) => Render(component);
+import * as t from 'types';
 
 // this.pan = PanResponder.create({
 //   onStartShouldSetPanResponder: () => true,
@@ -42,90 +37,69 @@ const Renderer = ({ component }) => Render(component);
 //   },
 // });
 
-export class Canvas extends React.Component {
-  constructor(props){
-    super(props);
+// export default class Canvas extends React.Component {
+//   constructor(props){
+//     super(props);
 
-    this.state {
-      component = {
-        type: 'div',
-        props: {
-          style: {
-            flex: 1,
-            backgroundColor: 'blue',
-          },
-        },
-        children: [
-          { type: Text, props: { key: 1, flex: 1 }, children: 'a' },
-          { type: Text, props: { key: 2, flex: 1 }, children: 'b' },
-          // <Text key={1}>test</Text>,
-        ],
-      }
-    };
+//     // this.state = props.component;
 
+//     // this.position = new Animated.ValueXY();
+//     // this.onResize = this.onResize.bind(this);
+//   }
 
-    // this.position = new Animated.ValueXY();
-    this.onResize = this.onResize.bind(this);
-  }
+//   componentDidMount() {
+//     this.node = ReactDOM.findDOMNode(this);
+//     // const printRects = (ms) => ms.forEach(console.log);
+//     // new WebKitMutationObserver(printRects).observe(this.node, {
+//     //   // attributeFilter: ['style'],
+//     //   // attributeOldValue: true,
+//     //   attributes: true,
+//     //   characterData: true,
+//     //   childList: true,
+//     //   subtree: true,
+//     //   attributeOldValue: true,
+//     //   characterDataOldValue: true
+//     // });
 
-  componentDidMount() {
-    this.node = ReactDOM.findDOMNode(this);
-    const printRects = (ms) => ms.forEach(console.log);
-    new WebKitMutationObserver(printRects).observe(this.node, {
-      // attributeFilter: ['style'],
-      // attributeOldValue: true,
-      attributes: true,
-      characterData: true,
-      childList: true,
-      subtree: true,
-      attributeOldValue: true,
-      characterDataOldValue: true
-    });
+//     // console.log(this);
+//     // this.onResize();
+//   };
 
-    // console.log(this);
-    this.onResize();
-  };
+//   // onResize() {
+//   //   const rect = this.node.getBoundingClientRect();
+//   //   for(let r in rect) {
+//   //     this[r] = rect[r];
+//   //   }
+//   //   console.log(this.x, this.y, this.width, this.height);
+//   // }
 
-  onResize() {
-    const rect = this.node.getBoundingClientRect();
-    for(let r in rect) {
-      this[r] = rect[r];
-    }
-    console.log(this.x, this.y, this.width, this.height);
-  }
+//   // componentDidUpdate() {
+//   //   this.onResize();
+//   // }
 
-  renderComponent() {
-    const { component } = this.props;
-    return React.createElement(component.type, component,props, component.children);
-  }
+//   render() {
+//     const {
+//       width,
+//       height,
+//       // flex,
+//       scale,
+//     } = this.props;
+//     // const display = flex ? 'flex' : 'block';
+//     const canvas = {
+//       // ...this.props.style,
+//       width,
+//       height,
+//       backgroundColor: 'white',
+//     };
 
-  componentDidUpdate() {
-    this.onResize();
-  }
-
-  render() {
-    const {
-      width,
-      height,
-      // flex,
-      scale,
-    } = this.props;
-    // const display = flex ? 'flex' : 'block';
-    const canvas = {
-      // ...this.props.style,
-      width,
-      height,
-      backgroundColor: 'white',
-    };
-
-    return (
-      <View style={canvas}>
-        {this.renderComponent()}
-      </View>
-    );
-  }
-}
-Canvas.displayName = 'Canvas';
+//     return (
+//       <View style={canvas}>
+//         {Render(this.props.component)}
+//       </View>
+//     );
+//   }
+// }
+// Canvas.displayName = 'Canvas';
 
 // {React.createElement(Animated.Text, {
 //   style: {
@@ -137,9 +111,33 @@ Canvas.displayName = 'Canvas';
 //   ...this.pan.panHandlers,
 // }, Platform.OS)}
 
+const canvas = { boxShadow: '0px 5px 7px #d3dbec' };
+const Canvas = ({ component, top, left, width, height }) => (
+  <Container position="absolute" width={width} height={height} top={top} left={left} style={canvas}>
+    <Renderer component={component} />
+  </Container>
+);
+Canvas.propTypes = {
+  component: t.Component._type.isRequired,
+  top: t.Position.top.isRequired,
+  left: t.Position.left.isRequired,
+  width: t.Size.width.isRequired,
+  height: t.Size.height.isRequired,
+};
+
+const debug = withProps(console.log);
+const enhance = compose(
+  setDisplayName('Canvas'),
+  onlyUpdateForPropTypes,
+  // debug,
+);
+
+export default enhance(Canvas);
+
 Canvas.defaultProps = {
-  width: 100,
-  height: 100,
+  top: '100px',
+  left: '100px',
+  width: '100px',
+  height: '100px',
   scale: 1,
-  flex: false,
 };
